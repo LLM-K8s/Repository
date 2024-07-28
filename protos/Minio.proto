@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package minio;
+
+service MinioService {
+  // Upload a file to MinIO
+  rpc UploadFile(stream UploadFileRequest) returns (UploadFileResponse) {}
+
+  // Query file content
+  rpc QueryFileContent(QueryFileContentRequest) returns (QueryFileContentResponse) {}
+
+  // List files in a directory (file tree)
+  rpc ListDirectory(ListDirectoryRequest) returns (ListDirectoryResponse) {}
+
+  // Delete a file or directory
+  rpc DeleteFileOrDirectory(DeleteFileOrDirectoryRequest) returns (DeleteFileOrDirectoryResponse) {}
+}
+
+message UploadFileRequest {
+  string bucket_name = 1;
+  string object_name = 2;
+  bytes chunk_data = 3;
+}
+
+message UploadFileResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message QueryFileContentRequest {
+  string bucket_name = 1;
+  string object_name = 2;
+  int64 offset = 3;  // Start reading from this offset
+  int64 length = 4;  // Number of bytes to read, use -1 for entire file
+}
+
+message QueryFileContentResponse {
+  bytes content = 1;
+}
+
+message ListDirectoryRequest {
+  string bucket_name = 1;
+  string prefix = 2;  // Directory path
+  bool recursive = 3;
+}
+
+message ListDirectoryResponse {
+  repeated FileInfo files = 1;
+}
+
+message FileInfo {
+  string name = 1;
+  bool is_directory = 2;
+  int64 size = 3;
+  string last_modified = 4;
+}
+
+message DeleteFileOrDirectoryRequest {
+  string bucket_name = 1;
+  string path = 2;
+  bool recursive = 3;  // If true, delete directory and all its contents
+}
+
+message DeleteFileOrDirectoryResponse {
+  bool success = 1;
+  string message = 2;
+}

@@ -1,0 +1,11 @@
+services:
+  grcp-minio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "50051:50051"
+    environment:
+      - MINIO_ENDPOINT='MINIO_ENDPOINT'
+      - MINIO_ACCESS_KEY='MINIO_ACCESS_KEY'
+      - MINIO_SECRET_KEY='MINIO_SECRET_KEY'
